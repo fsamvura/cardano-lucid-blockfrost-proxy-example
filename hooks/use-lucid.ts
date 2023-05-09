@@ -13,8 +13,8 @@ const useLucid = () => {
   const initializeLucid = useCallback(async () => {
     if (isNil(networkId) || isNil(walletApi)) return
 
-    const provider = new Blockfrost(`/api/blockfrost/${networkId}`)
-    const network = networkId === 0 ? "Testnet" : "Mainnet"
+    const provider = new Blockfrost("https://cardano-preprod.blockfrost.io/api/v0", "preprod6b8gtgiQPnZV4UgkfeflhfirEmZZi86E")
+    const network = networkId === 0 ? "Preprod" : "Mainnet"
 
     const updatedLucid = await (isNil(lucid)
       ? Lucid.new(provider, network)

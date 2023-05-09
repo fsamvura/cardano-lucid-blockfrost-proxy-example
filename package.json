@@ -1,6 +1,6 @@
 {
   "engines": {
-    "node": "^14.17"
+    "node": "^16.15.1"
   },
   "name": "lucid-blockfrost-proxy-example",
   "version": "0.1.0",

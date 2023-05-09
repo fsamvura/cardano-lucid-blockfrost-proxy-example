@@ -1,4 +1,5 @@
-import { Lucid } from 'lucid-cardano';
+import { Lucid, Data } from "https://deno.land/x/lucid@0.10.4/mod.ts";
+//import { Data, Lucid } from 'lucid-cardano';
 import { useCallback, useEffect, useState } from 'react';
 
 const useTransactionSender = (lucid?: Lucid) => {
@@ -17,11 +18,39 @@ const useTransactionSender = (lucid?: Lucid) => {
 
   const sendTransaction = useCallback(async () => {
     if (!lucid || !toAccount || !lovelace) return
+    const { paymentCredential } = lucid.utils.getAddressDetails(
+      await lucid.wallet.address(),
+    );
+    const makerPkh: String = paymentCredential.hash;
+    console.log("PKH : ", makerPkh);
+    const totalamount: BigInt = lovelace * 10;
+    console.log("Amount : ", totalamount);
+    //Create the Datum - à commenter si on n'envoit pas au smart contract;
+    // Adresse Smart Contract Ekival: addr_test1wznm03079t5dr5xeetd4vjq2p3he6k5t4v898zmdxn0n8dq506hhn
 
+    const Offer = Data.Object({
+      maker: Data.Bytes(),
+      taker: Data.Bytes(),
+      amount: Data.Integer(),
+      deposit: Data.Integer(),
+      deadline: Data.Integer(),
+      service: Data.Integer(),
+      status: Data.Integer(),
+    });
+    type Offer = Data.Static<typeof Offer>;
+
+    const offer = Data.to<Offer>(
+      { maker: makerPkh, taker: "", amount: totalamount, deposit: BigInt(lovelace), deadline: 1651025390000n, service: 1n, status: 0n },
+      Offer,
+    );
+
+    // Fin du comment out si nécéssaire
     try {
       const tx = await lucid
         .newTx()
-        .payToAddress(toAccount, { lovelace: BigInt(lovelace) })
+        .payToContract(toAccount, { inline: offer }, { lovelace: BigInt(lovelace) })
+        //.payToAddress(toAccount, { lovelace: BigInt(lovelace) })
+        //.payToContract(validatorAddress, { inline: offer }, { lovelace: amount, [unit]: 1n })
         .complete()
 
       const signedTx = await tx.sign().complete()
