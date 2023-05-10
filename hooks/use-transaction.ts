@@ -25,7 +25,7 @@ const useTransactionSender = (lucid?: Lucid) => {
     );
     const makerPkh: String = paymentCredential.hash;
     console.log("PKH : ", makerPkh);
-    const totalamount: BigInt = lovelace * 10;
+    const totalamount = lovelace * 10;
     console.log("Amount : ", totalamount);
     //Create the Datum - à commenter si on n'envoit pas au smart contract;
     // Adresse Smart Contract Ekival: addr_test1wznm03079t5dr5xeetd4vjq2p3he6k5t4v898zmdxn0n8dq506hhn
@@ -43,7 +43,7 @@ const useTransactionSender = (lucid?: Lucid) => {
     type Offer = Data.Static<typeof Offer>;
 
     const offer = Data.to<Offer>(
-      { maker: makerPkh, taker: "", amount: 320000000n, deposit: 32000000n, deadline: 1651025390000n, service: 1n, status: 0n },
+      { maker: makerPkh, taker: "", amount: BigInt(totalamount), deposit: BigInt(lovelace), deadline: 1651025390000n, service: 1n, status: 0n },
       Offer,
     );
     // Fin du comment out si nécéssaire
