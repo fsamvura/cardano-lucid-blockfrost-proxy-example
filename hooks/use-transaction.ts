@@ -1,6 +1,6 @@
 //import { Lucid, } from "https://deno.land/x/lucid@0.10.4/mod.ts";
 import { Lucid } from 'lucid-cardano';
-import { Data } from "lucid-cardano";
+import { Data, fromText } from "lucid-cardano";
 import { useCallback, useEffect, useState } from 'react';
 
 
@@ -23,6 +23,22 @@ const useTransactionSender = (lucid?: Lucid) => {
     const { paymentCredential } = lucid.utils.getAddressDetails(
       await lucid.wallet.address(),
     );
+
+    const mintingPolicy = lucid.utils.nativeScriptFromJson(
+      {
+        type: "all",
+        scripts: [
+          { type: "sig", keyHash: paymentCredential.hash },
+          {
+            type: "before",
+            slot: lucid.utils.unixTimeToSlot(Date.now() + 1000000),
+          },
+        ],
+      },
+    );
+
+    const policyId = lucid.utils.mintingPolicyToId(mintingPolicy);
+    const unit = policyId + fromText("EkivalTrans1token");
     const makerPkh: String = paymentCredential.hash;
     console.log("PKH : ", makerPkh);
     const totalamount = lovelace * 10;
@@ -51,7 +67,10 @@ const useTransactionSender = (lucid?: Lucid) => {
       
       const tx = await lucid
         .newTx()
-        .payToContract(toAccount, { inline: offer }, { lovelace: BigInt(lovelace) })
+        .mintAssets({ [unit]: 1n })
+        .validTo(Date.now() + 200000)
+        .attachMintingPolicy(mintingPolicy)
+        .payToContract(toAccount, { inline: offer }, { lovelace: BigInt(lovelace), [unit]: 1n })
         //.payToAddress(toAccount, { lovelace: BigInt(lovelace) })
         .complete()
 
