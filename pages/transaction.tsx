@@ -6,15 +6,15 @@ import styles from "../styles/index.module.css"
 
 const Index = () => {
   const hasNamiExtension = useHasNamiExtension()
-  const { lucid, networkId } = useLucid()
-  const tx = useTransactionSender(lucid)
+  const { lucid_a, networkId } = useLucid()
+  const tx = useTransactionSender(lucid_a)
 
   // strict equals to avoid undefined
   if (hasNamiExtension === false)
     return <div>This example only works with the Nami extension installed. Please install it.</div>
 
   // not initialized yet
-  if (!lucid) return null
+  if (!lucid_a) return null
 
   const canTransact = tx.lovelace > 0 && tx.toAccount
 

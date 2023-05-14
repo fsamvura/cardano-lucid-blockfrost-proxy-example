@@ -6,7 +6,7 @@ import { useNetworkId } from "./use-network-id"
 import { useWalletApi } from "./use-wallet-api"
 
 const useLucid = () => {
-  const [lucid, setLucid] = useState<Lucid>()
+  const [lucid_a, setLucid] = useState<Lucid>()
   const walletApi = useWalletApi()
   const networkId = useNetworkId(walletApi)
 
@@ -16,14 +16,14 @@ const useLucid = () => {
     const provider = new Blockfrost("https://cardano-preprod.blockfrost.io/api/v0", "preprod6b8gtgiQPnZV4UgkfeflhfirEmZZi86E")
     const network = networkId === 0 ? "Preprod" : "Mainnet"
 
-    const updatedLucid = await (isNil(lucid)
+    const updatedLucid = await (isNil(lucid_a)
       ? Lucid.new(provider, network)
-      : lucid.switchProvider(provider, network))
+      : lucid_a.switchProvider(provider, network))
 
     const lucidWithWallet = updatedLucid.selectWallet(walletApi)
 
     setLucid(lucidWithWallet)
-  }, [lucid, networkId, walletApi])
+  }, [lucid_a, networkId, walletApi])
 
   useEffect(() => {
     initializeLucid()
@@ -32,7 +32,7 @@ const useLucid = () => {
   return {
     networkId,
     walletApi,
-    lucid,
+    lucid_a,
   }
 }
 

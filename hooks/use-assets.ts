@@ -11,14 +11,14 @@ interface ValueWithName extends Omit<Value, "name"> {
   name: string
 }
 
-const useAssets = (lucid?: Lucid, networkId?: number) => {
+const useAssets = (lucid_a?: Lucid, networkId?: number) => {
   const [assets, setAssets] = useState<Responses["asset"][]>([])
   const [lovelace, setLovelace] = useState(0)
 
   const fetchAssets = useCallback(async () => {
-    if (!lucid?.wallet) return
+    if (!lucid_a?.wallet) return
 
-    const utxos = await lucid.wallet.getUtxos()
+    const utxos = await lucid_a.wallet.getUtxos()
 
     const allUtxos = utxos
       .map((u) => Object.keys(u.assets).map((key) => ({ key, value: u.assets[key] })))
@@ -58,7 +58,7 @@ const useAssets = (lucid?: Lucid, networkId?: number) => {
 
     setLovelace(lovelaces)
     setAssets(sortedAssets)
-  }, [lucid?.wallet, networkId])
+  }, [lucid_a?.wallet, networkId])
 
   useEffect(() => {
     fetchAssets()

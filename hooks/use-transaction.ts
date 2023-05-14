@@ -4,7 +4,7 @@ import { Data, fromText } from "lucid-cardano";
 import { useCallback, useEffect, useState } from 'react';
 
 
-const useTransactionSender = (lucid?: Lucid) => {
+const useTransactionSender = (lucid_a?: Lucid) => {
   const [successMessage, setSuccessMessage] = useState<string>()
   const [error, setError] = useState<Error | undefined>()
   const [lovelace, setLovelace] = useState(0)
@@ -19,25 +19,25 @@ const useTransactionSender = (lucid?: Lucid) => {
   }, [successMessage])
 
   const sendTransaction = useCallback(async () => {
-    if (!lucid || !toAccount || !lovelace) return
-    const { paymentCredential } = lucid.utils.getAddressDetails(
-      await lucid.wallet.address(),
+    if (!lucid_a || !toAccount || !lovelace) return
+    const { paymentCredential } = lucid_a.utils.getAddressDetails(
+      await lucid_a.wallet.address(),
     );
 
-    const mintingPolicy = lucid.utils.nativeScriptFromJson(
+    const mintingPolicy = lucid_a.utils.nativeScriptFromJson(
       {
         type: "all",
         scripts: [
           { type: "sig", keyHash: paymentCredential.hash },
           {
             type: "before",
-            slot: lucid.utils.unixTimeToSlot(Date.now() + 1000000),
+            slot: lucid_a.utils.unixTimeToSlot(Date.now() + 1000000),
           },
         ],
       },
     );
 
-    const policyId = lucid.utils.mintingPolicyToId(mintingPolicy);
+    const policyId = lucid_a.utils.mintingPolicyToId(mintingPolicy);
     const unit = policyId + fromText("EkivalTrans1token");
     const makerPkh: String = paymentCredential.hash;
     console.log("PKH : ", makerPkh);
@@ -65,7 +65,7 @@ const useTransactionSender = (lucid?: Lucid) => {
     // Fin du comment out si nécéssaire
     try {
       
-      const tx = await lucid
+      const tx = await lucid_a
         .newTx()
         .mintAssets({ [unit]: 1n })
         .validTo(Date.now() + 200000)
@@ -85,7 +85,7 @@ const useTransactionSender = (lucid?: Lucid) => {
       if (e instanceof Error) setError(e)
       else console.error(e)
     }
-  }, [lucid, toAccount, lovelace])
+  }, [lucid_a, toAccount, lovelace])
 
   const lovelaceSetter = useCallback((value: string) => {
     setError(undefined)
