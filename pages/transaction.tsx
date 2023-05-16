@@ -1,6 +1,6 @@
 import { useHasNamiExtension } from "hooks/use-has-nami-extension"
 import { useLucid } from "hooks/use-lucid"
-import { useTransactionSender } from "hooks/use-transaction"
+import { useTransactionSender } from "hooks/use-transaction_c"
 
 import styles from "../styles/index.module.css"
 
